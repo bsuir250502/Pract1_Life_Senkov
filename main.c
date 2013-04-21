@@ -5,18 +5,27 @@
 
 #define STR_MAX 256
 
-void str_input(char *information, char *input_text, int max_number_of_symbols);
+typedef struct {
+    int width;
+    int length;
+    int gen_number;
+} settings_t;
+
 int int_input(char *information, int min, int max);
-void help(int argc, char **argv);
 void file_output(char *file_name);
-int game_settings();
-int select_info_variant();
+void help(int argc, char **argv);
+void game_administration(settings_t size);
+int select_game_settings();
+int info_variant();
+int settings_input(settings_t size);
+int file_read(settings_t size);
 
 
 int main(int argc, char **argv)
 {
+    settings_t size;
     help(argc,argv);
-    game_settings();
+    game_administration(size);
     return 0;
 }
 
@@ -28,41 +37,52 @@ void help(int argc, char **argv)
     }
 }
 
-void file_output(char *file_name)
-{   
-    char input_buffer[STR_MAX];
-    FILE *file;
-    file = fopen(file_name, "r") ;
-    puts("\n");
-    while (fgets(input_buffer, sizeof(input_buffer)/sizeof(*input_buffer), file)) {
-            printf ("%s", input_buffer);
-        }
-    fclose(file);
-    puts("\n");
+void game_administration(settings_t size)
+{
+    if(select_game_settings()) {
+        settings_input(size);
+    }
+    else {
+        file_read(size);
+    }
 }
 
-int game_settings()
+int settings_input(settings_t size)
+{
+    size.width = int_input("\nenter width", 0, 20);
+    size.length = int_input("length", 0, 20);
+    size.gen_number = int_input("generation number", 1, 100);
+    return 1;
+}
+
+int file_read(settings_t size)
+{
+    FILE *file = fopen("settings.txt", "r");
+    fclose(file);
+    return 1;
+}
+
+int select_game_settings()
 {
     int i = 0;
-    if (select_info_variant() == 1) {
+    if (info_variant() == 1) {
         file_output("settings.txt");
         puts("                          If you want:\n"
              "          -------------------------------------------------\n"
              "          1) to continue game with this settings, enter '1'\n"
              "          -------------------------------------------------\n"
              "               2) to input your settings, enter '2'\n");
-        i = int_input("enter", 1, 2);
-        if (i == 2) {
-            exit(0);
+        if ((i = int_input("enter", 1, 2)) == 2) {
+            return 1;
+        }
+        else {
+            return 0;
         }
     }
-    else {
-        return 1;
-    } 
     return 1;
 }
 
-int select_info_variant()
+int info_variant()
 {
     int select;
     puts ("\n                            game settings :\n"

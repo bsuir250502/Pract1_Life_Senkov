@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define STR_MAX 256
 /* function for input and valid infomation (srting). */
 void str_input(char *information, char *input_text, int max_number_of_symbols)
 {
@@ -22,10 +23,10 @@ void str_input(char *information, char *input_text, int max_number_of_symbols)
 int int_input(char *information, int min, int max)
 {
     int input_text;
-    char input_buffer[128];
+    char input_buffer[STR_MAX];
     printf("%s (min - %d, max - %d): ", information, min, max);
     while (1) {
-        fgets(input_buffer, 128, stdin);
+        fgets(input_buffer, STR_MAX, stdin);
         input_buffer[strlen(input_buffer)-1]='\0';
         if (!(input_text = atoi(input_buffer)) || input_text < min || input_text > max) {
             puts("Invalid input, try again.");
@@ -37,13 +38,19 @@ int int_input(char *information, int min, int max)
     return input_text;
 }
 
-/* -h */
-void help_output()
+/* file output */
+void file_output(char *file_name)
 {   
-    char input_buffer[128];
-    FILE *file = fopen("README.txt","r");
-    while (fgets(input_buffer, sizeof(input_buffer)/sizeof(*input_buffer), file)) {
-        printf("%s", input_buffer);
+    char input_buffer[STR_MAX];
+    FILE *file;
+    if (!(file = fopen(file_name, "r"))) {
+        puts ("\n!! No such file in directory !!\n");
     }
+    puts("\n");
+    while (fgets(input_buffer, sizeof(input_buffer)/sizeof(*input_buffer), file)) {
+            printf ("%s", input_buffer);
+        }
     fclose(file);
+    puts("\n");
 }
+
