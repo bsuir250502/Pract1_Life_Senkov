@@ -6,7 +6,7 @@
 #include <string.h>
 
 void str_input(char *information, char *input_text, int max_number_of_symbols);
-int int_input(char *information, int min, int max);
+int int_input(char *information, int min, int max, FILE *file);
 void file_output(char *file_name);
 
 #endif /* _LIB1_H_ */
