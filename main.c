@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "lib1.h"
 
 #define STR_MAX 256
@@ -16,6 +15,7 @@ typedef struct {
 
 int int_input(char *information, int min, int max, FILE *file);
 void file_output(char *file_name);
+void str_input(char *information, char *input_text, int max_number_of_symbols);
 void help(int argc, char **argv);
 int select_game_settings(settings_t *size, FILE *file);
 int info_variant();
@@ -76,6 +76,7 @@ void game_administration(settings_t size, int **cur_gen, int **next_gen,
 int cur_filling(settings_t size, int **cur_gen, FILE *file, int flag)
 {
     int i, j;
+    char buffer[10], *strtl;
     for (i = 0; i < size.height; i++) {
         if (flag == 1) {
             for (j = 0; j < size.width; j++) {
@@ -86,7 +87,8 @@ int cur_filling(settings_t size, int **cur_gen, FILE *file, int flag)
         else {
             puts("\nnew line:");
             for (j = 0; j < size.width; j++) {
-                cur_gen[i][j] = int_input("enter emement", 0, 1, stdin);
+                str_input("element: ", buffer, 10);
+                cur_gen[i][j] = strtol(buffer, &strtl, 10);
             }
         }
     }
