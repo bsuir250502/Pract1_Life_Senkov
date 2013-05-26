@@ -21,8 +21,8 @@ int select_game_settings(settings_t *size, FILE *file);
 int info_variant();
 int settings_input(settings_t *size, FILE *file);
 void game_administration(settings_t size,  int **cur_gen, int **next_gen,
-                         FILE *file, int flag);
-int cur_filling(settings_t size, int **cur_gen, FILE *file, int flag);
+                         FILE *file, int manual_input);
+int cur_filling(settings_t size, int **cur_gen, FILE *file, int manual_input);
 int see_game_map(settings_t size, int **cur_gen);
 void new_gen(settings_t size, int **cur_gen, int **next_gen);
 int neighbors_num(settings_t size, int **cur_gen, int i, int j);
@@ -59,9 +59,9 @@ int main(int argc, char **argv)
 
 
 void game_administration(settings_t size, int **cur_gen, int **next_gen,
-                         FILE *file, int flag)
+                         FILE *file, int manual_input)
 {   int i = 0;
-    cur_filling(size, cur_gen, file, flag);
+    cur_filling(size, cur_gen, file, manual_input);
     see_game_map(size, cur_gen);
     for (i = 0; i < size.gen_number; i++) {
         new_gen(size, cur_gen, next_gen);
@@ -73,12 +73,11 @@ void game_administration(settings_t size, int **cur_gen, int **next_gen,
     free_memory(size, cur_gen, next_gen);
 }
 
-int cur_filling(settings_t size, int **cur_gen, FILE *file, int flag)
+int cur_filling(settings_t size, int **cur_gen, FILE *file, int manual_input)
 {
     int i, j;
-    char buffer[10], *strtl;
     for (i = 0; i < size.height; i++) {
-        if (flag == 1) {
+        if (manual_input == 1) {
             for (j = 0; j < size.width; j++) {
                 cur_gen[i][j] = getc(file) - '0';
             }
@@ -87,8 +86,7 @@ int cur_filling(settings_t size, int **cur_gen, FILE *file, int flag)
         else {
             puts("\nnew line:");
             for (j = 0; j < size.width; j++) {
-                str_input("element: ", buffer, 10);
-                cur_gen[i][j] = strtol(buffer, &strtl, 10);
+                cur_gen[i][j] = int_input("element", 0, 1, stdin);
             }
         }
     }

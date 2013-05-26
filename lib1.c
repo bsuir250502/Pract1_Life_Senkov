@@ -19,18 +19,21 @@ void str_input(char *information, char *input_text, int max_number_of_symbols)
     }
 }
 
-/* function for input and valid infomation (int). */
 int int_input(char *information, int min, int max, FILE *file)
 {
     int input_text;
     char input_buffer[STR_MAX];
     if (file == stdin) {
-        printf("%s:(min - %d, max - %d): ", information, min, max);
+        printf("%s(min - %d, max - %d): ", information, min, max);
     }
     while (1) {
         fgets(input_buffer, STR_MAX, file);
         input_buffer[strlen(input_buffer)-1]='\0';
         if (!(input_text = atoi(input_buffer)) || input_text < min || input_text > max) {
+            if (!strcmp(input_buffer, "0") && 0 >= min && 0 <= max) {
+                input_text = 0;
+                return input_text;
+        }
             puts("Invalid input, try again.");
         }
         else {
